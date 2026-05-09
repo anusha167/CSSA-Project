@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSSA Slang Helper – Options</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #F7F4EE;
+      color: #2E2040;
+      display: flex;
+      justify-content: center;
+      padding: 48px 16px;
+      min-height: 100vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 24px rgba(46,32,64,.08);
+    }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    p.sub { font-size: 13px; color: #7B6FA0; margin-bottom: 24px; line-height: 1.5; }
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #E2D9F3;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      color: #2E2040;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input:focus { border-color: #7B6FA0; }
+    .row { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    button:hover { opacity: .85; }
+    .btn-primary { background: #2E2040; color: #fff; }
+    .btn-secondary { background: #F0E8C4; color: #2E2040; }
+    .status {
+      margin-top: 16px;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: none;
+    }
+    .status.ok { background: #E8F5E9; color: #2E7D32; display: block; }
+    .status.err { background: #FFEBEE; color: #C62828; display: block; }
+    .help {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #F0E8C4;
+      font-size: 12px;
+      color: #7B6FA0;
+      line-height: 1.6;
+    }
+    .help a { color: #6BAAB8; text-decoration: none; }
+    .help a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Slang Helper Settings</h1>
+    <p class="sub">Add your Gemini API key to look up any word or phrase — not just the built-in database. The key is stored locally on your device and never sent anywhere except Google's API.</p>
+
+    <label for="key-input">Gemini API Key</label>
+    <input type="password" id="key-input" placeholder="AIza…" autocomplete="off" spellcheck="false">
+
+    <div class="row">
+      <button class="btn-primary" id="save-btn">Save Key</button>
+      <button class="btn-secondary" id="clear-btn">Remove Key</button>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="help">
+      Don't have a key?
+      <a href="https://aistudio.google.com/app/apikey" target="_blank">Get a free Gemini API key</a>
+      from Google AI Studio — no credit card required for the free tier.
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

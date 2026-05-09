@@ -1,0 +1,493 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+/* ── Reset for all injected elements ───────────────────── */
+.cssa-tooltip,
+.cssa-tooltip *,
+.cssa-sidebar,
+.cssa-sidebar *,
+.cssa-fab {
+  box-sizing: border-box;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1;
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOOLTIP CARD
+══════════════════════════════════════════════════════════ */
+.cssa-tooltip {
+  position: absolute;
+  z-index: 2147483647;
+  width: 320px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow:
+    0 2px 8px rgba(46, 32, 64, 0.06),
+    0 8px 32px rgba(46, 32, 64, 0.16);
+  padding: 20px;
+  color: #3A3F45;
+  border: 1px solid #EDE9F5;
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+}
+
+.cssa-tooltip--show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.cssa-tooltip--hide {
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+}
+
+/* Header */
+.cssa-tt-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cssa-tt-wordrow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cssa-tt-word {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2E2040;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.cssa-tt-pos {
+  font-size: 13px;
+  font-style: italic;
+  color: #7B6FA0;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Chips row */
+.cssa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.cssa-chip {
+  background: #EDE9F5;
+  color: #5A4A8A;
+  border-radius: 100px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.cssa-chip--antonym {
+  background: #F5F0E0;
+  color: #6B5A2E;
+}
+
+/* Sections */
+.cssa-tt-section {
+  margin-bottom: 12px;
+}
+
+.cssa-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #A98088;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.cssa-tt-def {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #3A3F45;
+}
+
+.cssa-tt-example {
+  font-size: 13px;
+  font-style: italic;
+  color: #3A3F45;
+  border-left: 3px solid #7B6FA0;
+  margin: 0;
+  padding: 6px 0 6px 12px;
+  line-height: 1.55;
+}
+
+/* Footer buttons */
+.cssa-tt-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #F0EDF7;
+}
+
+/* Shared icon button */
+.cssa-icon-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  color: #7B6FA0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.14s, color 0.14s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.cssa-icon-btn:hover {
+  background: #EDE9F5;
+  color: #2E2040;
+}
+
+/* Primary button */
+.cssa-btn-primary {
+  flex: 1;
+  background: #2E2040;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.cssa-btn-primary:hover {
+  background: #4D3D70;
+}
+
+/* Secondary button */
+.cssa-btn-secondary {
+  background: #F0EDF7;
+  color: #2E2040;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.cssa-btn-secondary:hover {
+  background: #DDD6EF;
+}
+
+.cssa-btn-secondary.cssa-saved {
+  background: #4CAF82;
+  color: #ffffff;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════════════ */
+.cssa-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 340px;
+  height: 100vh;
+  height: 100dvh;
+  background: #ffffff;
+  z-index: 2147483646;
+  box-shadow: -4px 0 28px rgba(46, 32, 64, 0.14);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  color: #3A3F45;
+}
+
+.cssa-sidebar--open {
+  transform: translateX(0);
+}
+
+/* Sidebar header */
+.cssa-sb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: #2E2040;
+  flex-shrink: 0;
+}
+
+.cssa-sb-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.02em;
+}
+
+.cssa-sb-hbtns {
+  display: flex;
+  gap: 2px;
+}
+
+.cssa-sb-header .cssa-icon-btn {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cssa-sb-header .cssa-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Sidebar body */
+.cssa-sb-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.cssa-sb-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cssa-sb-body::-webkit-scrollbar-thumb {
+  background: #DDD6EF;
+  border-radius: 4px;
+}
+
+/* Empty state */
+.cssa-sb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 100%;
+  padding: 48px 28px;
+  text-align: center;
+  color: #A98088;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Word area */
+.cssa-sb-word-area {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid #F0EDF7;
+}
+
+.cssa-sb-word-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cssa-sb-word {
+  font-size: 30px;
+  font-weight: 700;
+  color: #2E2040;
+  letter-spacing: -0.5px;
+  margin: 0;
+  text-transform: capitalize;
+  line-height: 1;
+}
+
+.cssa-sb-word-actions {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+/* Familiarity circles */
+.cssa-circles {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.cssa-circle {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid #2E2040;
+  background: transparent;
+  display: inline-block;
+}
+
+.cssa-circle--on {
+  background: #2E2040;
+}
+
+/* Part of speech */
+.cssa-sb-pos {
+  font-size: 13px;
+  font-style: italic;
+  color: #7B6FA0;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+/* Sidebar chip rows */
+.cssa-chips--synonyms {
+  margin-bottom: 6px;
+}
+
+.cssa-chips--antonyms {
+  margin-top: 0;
+}
+
+/* Bookmark saved state */
+.cssa-sb-bookmark--saved svg {
+  fill: #2E2040;
+}
+
+/* Collapsible sections */
+.cssa-sb-sections {
+  padding-bottom: 24px;
+}
+
+.cssa-sb-section {
+  border-bottom: 1px solid #F0EDF7;
+}
+
+.cssa-sb-sec-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2E2040;
+  text-align: left;
+  transition: background 0.14s;
+  line-height: 1;
+}
+
+.cssa-sb-sec-hdr:hover {
+  background: #F8F5FF;
+}
+
+.cssa-chevron {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  color: #7B6FA0;
+}
+
+.cssa-sb-section--open .cssa-chevron {
+  transform: rotate(180deg);
+}
+
+.cssa-sb-sec-body {
+  display: none;
+  padding: 0 20px 16px;
+}
+
+.cssa-sb-section--open .cssa-sb-sec-body {
+  display: block;
+}
+
+.cssa-sb-sec-body p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #3A3F45;
+  margin: 0;
+}
+
+.cssa-sb-sec-body em {
+  font-style: italic;
+  padding-left: 12px;
+  border-left: 3px solid #7B6FA0;
+  display: block;
+  color: #3A3F45;
+}
+
+/* ══════════════════════════════════════════════════════════
+   FLOATING ACTION BUTTON
+══════════════════════════════════════════════════════════ */
+.cssa-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #2E2040;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(46, 32, 64, 0.36);
+  z-index: 2147483645;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+
+.cssa-fab:hover {
+  background: #4D3D70;
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgba(46, 32, 64, 0.42);
+}
+
+.cssa-fab:active {
+  transform: scale(0.95);
+}
+
+/* Loading state */
+.cssa-loading {
+  color: #7B6FA0;
+  font-style: italic;
+  animation: cssa-pulse 1.2s ease-in-out infinite;
+}
+@keyframes cssa-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Slang / Standard badge in sidebar */
+.cssa-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #E8F0F2;
+  color: #6BAAB8;
+  margin-left: 8px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.cssa-badge--slang {
+  background: #F0E8C4;
+  color: #7B6FA0;
+}

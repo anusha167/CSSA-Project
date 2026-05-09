@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSSA Slang Helper — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #2E2040;
+      --secondary: #7B6FA0;
+      --accent: #6BAAB8;
+      --surface: #F0E8C4;
+      --gray-700: #3A3F45;
+      --gray-400: #A98088;
+      --gray-100: #E8EDF2;
+      --white: #ffffff;
+      --chip-bg: #EDE9F5;
+      --chip-color: #5A4A8A;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f4f2f8;
+      color: var(--gray-700);
+      min-height: 100vh;
+    }
+
+    /* ── Demo layout ── */
+    .demo-header {
+      background: var(--primary);
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .demo-logo {
+      width: 32px; height: 32px;
+      background: var(--surface);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px; color: var(--primary);
+    }
+    .demo-header h1 { font-size: 18px; font-weight: 600; }
+    .demo-header span { font-size: 13px; opacity: 0.6; margin-left: 4px; }
+
+    .demo-main {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .demo-col-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* ── Popup card ── */
+    .popup-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(46,32,64,0.12);
+    }
+    .p-header { background: var(--primary); padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+    .p-logo { width: 26px; height: 26px; background: var(--surface); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: var(--primary); }
+    .p-title { font-size: 15px; font-weight: 600; color: white; }
+    .p-stats { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #F8F5FF; border-bottom: 1px solid #EDE9F5; font-size: 13px; color: var(--secondary); }
+    .p-stats strong { color: var(--primary); font-size: 15px; }
+    .p-stats-sub { font-size: 11px; color: var(--gray-400); }
+    .p-search-wrap { position: relative; padding: 10px 12px 6px; }
+    .p-search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-30%); }
+    .p-search { width: 100%; padding: 8px 10px 8px 32px; border: 1.5px solid #EDE9F5; border-radius: 10px; font-size: 13px; font-family: inherit; color: var(--gray-700); background: #F8F5FF; outline: none; }
+    .p-search::placeholder { color: #B8ADCC; }
+    .p-sec-label { padding: 8px 16px 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: var(--gray-400); text-transform: uppercase; }
+    .p-list { padding: 2px 8px 4px; }
+    .p-word-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; transition: background 0.14s; }
+    .p-word-card:hover { background: #F8F5FF; }
+    .p-word-card-left { flex: 1; min-width: 0; }
+    .p-word-name { font-size: 14px; font-weight: 600; color: var(--primary); text-transform: capitalize; margin-bottom: 2px; }
+    .p-word-snippet { font-size: 11px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .p-word-pos { font-size: 11px; font-style: italic; color: var(--secondary); flex-shrink: 0; }
+    .p-word-remove { background: none; border: none; cursor: pointer; color: transparent; padding: 3px; border-radius: 5px; display: flex; align-items: center; }
+    .p-word-card:hover .p-word-remove { color: #C4B8DC; }
+    .p-footer { padding: 8px 12px 10px; border-top: 1px solid #F0EDF7; }
+    .p-clear-btn { width: 100%; padding: 8px; background: none; border: 1.5px solid #EDE9F5; border-radius: 8px; font-size: 12px; font-family: inherit; font-weight: 500; color: var(--gray-400); cursor: pointer; }
+
+    /* ── Right column ── */
+    .right-col { display: flex; flex-direction: column; gap: 24px; }
+
+    /* ── Tooltip card preview ── */
+    .tooltip-card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px rgba(46,32,64,0.06), 0 8px 32px rgba(46,32,64,0.14);
+      padding: 20px;
+      border: 1px solid #EDE9F5;
+      max-width: 340px;
+    }
+    .tt-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .tt-wordrow { display: flex; align-items: baseline; gap: 10px; }
+    .tt-word { font-size: 28px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; line-height: 1; }
+    .tt-pos { font-size: 13px; font-style: italic; color: var(--secondary); }
+    .icon-btn { background: none; border: none; padding: 6px; cursor: pointer; color: var(--secondary); border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: background 0.14s; }
+    .icon-btn:hover { background: #EDE9F5; color: var(--primary); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .chip { background: var(--chip-bg); color: var(--chip-color); border-radius: 100px; padding: 4px 12px; font-size: 12px; font-weight: 500; }
+    .chip-antonym { background: #F5F0E0; color: #6B5A2E; }
+    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: var(--gray-400); text-transform: uppercase; margin-bottom: 6px; }
+    .tt-def { font-size: 14px; line-height: 1.55; color: var(--gray-700); margin-bottom: 12px; }
+    .tt-example { font-size: 13px; font-style: italic; color: var(--gray-700); border-left: 3px solid var(--secondary); margin: 0; padding: 6px 0 6px 12px; line-height: 1.55; }
+    .tt-footer { display: flex; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid #F0EDF7; }
+    .btn-primary { flex: 1; background: var(--primary); color: white; border: none; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; }
+    .btn-primary:hover { background: #4D3D70; }
+    .btn-secondary { background: #F0EDF7; color: var(--primary); border: none; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; }
+    .btn-secondary:hover { background: #DDD6EF; }
+
+    /* ── Sidebar preview ── */
+    .sidebar-preview {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(46,32,64,0.12);
+      overflow: hidden;
+      width: 100%;
+    }
+    .sb-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--primary); }
+    .sb-title { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .sb-header .icon-btn { color: rgba(255,255,255,0.7); }
+    .sb-header .icon-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+    .sb-word-area { padding: 24px 20px 16px; border-bottom: 1px solid #F0EDF7; }
+    .sb-word-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .sb-word { font-size: 30px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; margin: 0; line-height: 1; text-transform: capitalize; }
+    .sb-word-actions { display: flex; gap: 2px; margin-top: 2px; }
+    .circles { display: flex; gap: 5px; margin-bottom: 8px; }
+    .circle { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--primary); background: transparent; display: inline-block; }
+    .circle-on { background: var(--primary); }
+    .sb-pos { font-size: 13px; font-style: italic; color: var(--secondary); margin-bottom: 12px; }
+    .sb-sections { padding-bottom: 8px; }
+    .sb-section { border-bottom: 1px solid #F0EDF7; }
+    .sb-sec-hdr { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 14px 20px; background: none; border: none; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--primary); text-align: left; transition: background 0.14s; }
+    .sb-sec-hdr:hover { background: #F8F5FF; }
+    .chevron { transition: transform 0.2s; color: var(--secondary); }
+    .open .chevron { transform: rotate(180deg); }
+    .sb-sec-body { display: none; padding: 0 20px 16px; }
+    .open .sb-sec-body { display: block; }
+    .sb-sec-body p { font-size: 14px; line-height: 1.65; color: var(--gray-700); margin: 0; }
+    .sb-sec-body em { font-style: italic; padding-left: 12px; border-left: 3px solid var(--secondary); display: block; }
+
+    /* ── FAB ── */
+    .fab-demo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(46,32,64,0.08);
+    }
+    .fab {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(46,32,64,0.36);
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .fab:hover { background: #4D3D70; transform: scale(1.08); }
+    .fab-desc { font-size: 13px; color: var(--secondary); line-height: 1.5; }
+    .fab-desc strong { color: var(--primary); display: block; font-size: 14px; margin-bottom: 2px; }
+
+    /* ── Sample text ── */
+    .sample-text {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(46,32,64,0.08);
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--gray-700);
+    }
+    .slang-word {
+      background: #EDE9F5;
+      color: var(--primary);
+      border-radius: 4px;
+      padding: 0 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .slang-word:hover { background: #DDD6EF; }
+  </style>
+</head>
+<body>
+
+  <!-- Demo header -->
+  <div class="demo-header">
+    <div class="demo-logo">S</div>
+    <h1>CSSA Slang Helper <span>— Component Preview</span></h1>
+  </div>
+
+  <div class="demo-main">
+
+    <!-- LEFT: Popup / Backlog -->
+    <div>
+      <div class="demo-col-title">Extension Popup — Saved Words (Backlog)</div>
+      <div class="popup-card">
+        <div class="p-header">
+          <div class="p-logo">S</div>
+          <span class="p-title">Slang Helper</span>
+        </div>
+        <div class="p-stats">
+          <span><strong>6</strong> words saved</span>
+          <span class="p-stats-sub">Hover any page to discover</span>
+        </div>
+        <div class="p-search-wrap">
+          <svg class="p-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A98088" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" class="p-search" placeholder="Search your saved words…">
+        </div>
+        <div class="p-sec-label">SAVED WORDS</div>
+        <div class="p-list">
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">rizz</div><div class="p-word-snippet">Natural charm and ability to attract someone…</div></div>
+            <span class="p-word-pos">noun / verb</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">bussin</div><div class="p-word-snippet">Extremely delicious, excellent, or amazing…</div></div>
+            <span class="p-word-pos">adjective</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">no cap</div><div class="p-word-snippet">No lie — for real. Emphasizes complete honesty…</div></div>
+            <span class="p-word-pos">phrase</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">slay</div><div class="p-word-snippet">To do something exceptionally well or look…</div></div>
+            <span class="p-word-pos">verb</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">situationship</div><div class="p-word-snippet">An ambiguous romantic connection lacking…</div></div>
+            <span class="p-word-pos">noun</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+          <div class="p-word-card">
+            <div class="p-word-card-left"><div class="p-word-name">delulu</div><div class="p-word-snippet">Delusional — having unrealistic beliefs or…</div></div>
+            <span class="p-word-pos">adjective</span>
+            <button class="p-word-remove"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+          </div>
+        </div>
+        <div class="p-footer"><button class="p-clear-btn">Clear all</button></div>
+      </div>
+    </div>
+
+    <!-- RIGHT column -->
+    <div class="right-col">
+
+      <!-- Tooltip card -->
+      <div>
+        <div class="demo-col-title">Hover Tooltip — appears on slang word hover</div>
+        <div class="tooltip-card">
+          <div class="tt-header">
+            <div class="tt-wordrow">
+              <span class="tt-word">baddie</span>
+              <span class="tt-pos">noun</span>
+            </div>
+            <button class="icon-btn" title="Pronounce">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+            </button>
+          </div>
+          <div class="chips">
+            <span class="chip">it-girl</span>
+            <span class="chip">stunner</span>
+            <span class="chip">slay queen</span>
+          </div>
+          <div class="section-label">DEFINITION</div>
+          <div class="tt-def">A confident, stylish, and attractive woman. Unapologetically bold in their style and attitude.</div>
+          <div class="section-label">EXAMPLE</div>
+          <blockquote class="tt-example">"She walked into the room like a total baddie — everyone stopped and stared."</blockquote>
+          <div class="tt-footer">
+            <button class="btn-primary">Details</button>
+            <button class="btn-secondary">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar preview -->
+      <div>
+        <div class="demo-col-title">Sidebar — detailed view with collapsible sections</div>
+        <div class="sidebar-preview">
+          <div class="sb-header">
+            <span class="sb-title">Slang Helper</span>
+            <div style="display:flex;gap:2px">
+              <button class="icon-btn" title="Close">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="sb-word-area">
+            <div class="sb-word-row">
+              <h2 class="sb-word">baddie</h2>
+              <div class="sb-word-actions">
+                <button class="icon-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                </button>
+                <button class="icon-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="circles">
+              <span class="circle circle-on"></span>
+              <span class="circle circle-on"></span>
+              <span class="circle circle-on"></span>
+              <span class="circle"></span>
+              <span class="circle"></span>
+            </div>
+            <div class="sb-pos">noun</div>
+            <div class="chips" style="margin-bottom:6px">
+              <span class="chip">it-girl</span>
+              <span class="chip">stunner</span>
+              <span class="chip">slay queen</span>
+            </div>
+            <div class="chips">
+              <span class="chip chip-antonym">basic</span>
+              <span class="chip chip-antonym">wallflower</span>
+              <span class="chip chip-antonym">plain jane</span>
+            </div>
+          </div>
+          <div class="sb-sections">
+            <div class="sb-section open">
+              <button class="sb-sec-hdr" onclick="this.closest('.sb-section').classList.toggle('open')">
+                <span>Definition</span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="sb-sec-body"><p>A confident, stylish, and attractive woman. Unapologetically bold in their style and attitude.</p></div>
+            </div>
+            <div class="sb-section open">
+              <button class="sb-sec-hdr" onclick="this.closest('.sb-section').classList.toggle('open')">
+                <span>Example</span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="sb-sec-body"><p><em>She walked into the room like a total baddie. Everyone stopped and stared.</em></p></div>
+            </div>
+            <div class="sb-section">
+              <button class="sb-sec-hdr" onclick="this.closest('.sb-section').classList.toggle('open')">
+                <span>Cultural Usage</span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="sb-sec-body"><p>"Baddie" blew up through Black American slang and spread via Instagram and TikTok around 2015–2020. You'll hear it in rap lyrics, beauty communities, and gen z internet culture.</p></div>
+            </div>
+            <div class="sb-section">
+              <button class="sb-sec-hdr" onclick="this.closest('.sb-section').classList.toggle('open')">
+                <span>Etymology</span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="sb-sec-body"><p>From AAVE where "bad" means impressive/attractive (the opposite of its literal meaning). "Baddie" is the noun form — the "-ie" suffix making it casual and affectionate.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAB -->
+      <div>
+        <div class="demo-col-title">Floating Action Button — always visible on pages</div>
+        <div class="fab-demo">
+          <button class="fab">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+          <div class="fab-desc">
+            <strong>Slang Helper button</strong>
+            Fixed bottom-right on every page. Click to toggle the sidebar open/closed.
+          </div>
+        </div>
+      </div>
+
+      <!-- Sample page text -->
+      <div>
+        <div class="demo-col-title">Sample page — highlighted slang words trigger tooltips in real extension</div>
+        <div class="sample-text">
+          <p>So last night was honestly <span class="slang-word">bussin</span> — we went to that new spot downtown and the food was <span class="slang-word">fire</span>, no cap. Everyone was having the best time, total <span class="slang-word">main character energy</span>. My friend pulled up looking absolutely <span class="slang-word">snatched</span> — she really <span class="slang-word">understood the assignment</span>.</p>
+          <br>
+          <p>I heard some <span class="slang-word">tea</span> though — apparently Jake and Maya are in a whole <span class="slang-word">situationship</span> now. She's been <span class="slang-word">lowkey</span> obsessed with him but won't admit it. He's got serious <span class="slang-word">rizz</span>, tbh. Anyway I told her she needs to either <span class="slang-word">hard launch</span> it or walk away — that <span class="slang-word">talking stage</span> has gone on long enough, <span class="slang-word">periodt</span>.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

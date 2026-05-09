@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "CSSA Slang Helper",
+  "version": "1.0",
+  "description": "Understand slang in context — definitions, examples, cultural usage, and etymology for non-native English speakers.",
+  "permissions": ["storage", "activeTab", "tabs", "alarms"],
+  "host_permissions": ["https://generativelanguage.googleapis.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["data/slang_data.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "CSSA Slang Helper",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
